@@ -1,0 +1,51 @@
+import java.util.Scanner;
+/**
+ * Este programa calcula a duracao de um jogo com base na hora e minuto de inicio e de fim.
+ * <p>
+ * O jogo tem uma duracao minima de 1 minuto e maxima de 24 horas. Caso a hora final
+ * seja anterior a hora inicial, o programa considera que o jogo durou mais de um dia
+ * e realiza o ajuste necessario.
+ * <p>
+ * Exemplo de entradas e saidas:
+ * - Entrada: 7 8 9 10
+ * Saida: O JOGO DUROU 2 HORA(S) E 2 MINUTO(S)
+ * - Entrada: 7 7 7 7
+ * Saida: O JOGO DUROU 24 HORA(S) E 0 MINUTO(S)
+ * - Entrada: 7 10 8 9
+ * Saida: O JOGO DUROU 0 HORA(S) E 59 MINUTO(S)
+ */
+public class Main {
+    public static void main(String[] args) {
+        // Criando um Scanner para ler os dados de entrada
+        Scanner input = new Scanner(System.in);
+
+        // Leitura de quatro inteiros: hora inicial, minuto inicial, hora final e minuto final
+        int inicioHoras = input.nextInt();   // Hora inicial do jogo
+        int inicioMinutos = input.nextInt(); // Minuto inicial do jogo
+        int fimHoras = input.nextInt();      // Hora final do jogo
+        int fimMinutos = input.nextInt();    // Minuto final do jogo
+
+        // Conversao das horas para minutos e somando os minutos
+        int inicioTotal = inicioHoras * 60 + inicioMinutos; // Total de minutos no inicio
+        int fimTotal = fimHoras * 60 + fimMinutos;         // Total de minutos no fim
+
+        // Se o tempo final for menor ou igual ao tempo inicial, significa que o jogo durou mais de 24 horas
+        // Assim, somamos 24 horas em minutos ao tempo final.
+        if (fimTotal <= inicioTotal) {
+            fimTotal += 24 * 60; // Adiciona 24 horas (em minutos) ao tempo final
+        }
+
+        // Calcula a duração total em minutos
+        int duracaoTotal = fimTotal - inicioTotal;
+
+        // Calcula a quantidade de horas e minutos
+        int horas = duracaoTotal / 60;     // Numero de horas
+        int minutos = duracaoTotal % 60;   // Resto da divisão, ou seja, minutos restantes
+
+        // Exibe o resultado no formato solicitado
+        System.out.println("O JOGO DUROU " + horas + " HORA(S) E " + minutos + " MINUTO(S)");
+
+        // Fecha o scanner para liberar o recurso
+        input.close();
+    }
+}
