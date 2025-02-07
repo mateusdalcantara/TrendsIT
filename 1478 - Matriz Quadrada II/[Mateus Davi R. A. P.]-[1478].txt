@@ -1,0 +1,103 @@
+/**
+ * A classe Main contém a lógica para gerar e imprimir uma matriz de inteiros
+ * baseada na ordem fornecida pelo usuário, até que a ordem 0 seja fornecida.
+ * A matriz gerada segue um padrão onde o valor de cada elemento depende da
+ * diferença absoluta entre os índices de linha e coluna.
+ * <p>
+ * Exemplo de execução:
+ *1
+ *   1
+ *
+ * 2
+ *   1   2
+ *   2   1
+ *
+ * 3
+ *   1   2   3
+ *   2   1   2
+ *   3   2   1
+ *
+ * 4
+ *   1   2   3   4
+ *   2   1   2   3
+ *   3   2   1   2
+ *   4   3   2   1
+ *
+ * 5
+ *   1   2   3   4   5
+ *   2   1   2   3   4
+ *   3   2   1   2   3
+ *   4   3   2   1   2
+ *   5   4   3   2   1
+ * <p>
+ * A execução termina quando o número 0 for informado.
+ */
+public class Main {
+    static final int ZERO = 0;
+    static final int UM = 1;
+
+    public static int[][] gerarMatriz(int N) {
+        // Cria a matriz de inteiros de tamanho N x N
+        int[][] matriz = new int[N][N];
+
+        // Preenche a matriz com base na fórmula |i - j| + 1
+        for (int i = ZERO; i < N; i++) {
+            for (int j = ZERO; j < N; j++) {
+                matriz[i][j] = Math.abs(i - j) + UM;
+            }
+        }
+        return matriz;
+    }
+
+    public static void imprimirMatriz(int[][] matriz) {
+        // Usa StringBuilder para construir a string a ser impressa
+        StringBuilder sb = new StringBuilder();
+
+        // Percorre todas as linhas da matriz
+        for (int i = ZERO; i < matriz.length; i++) {
+            // Percorre todas as colunas da linha
+            for (int j = ZERO; j < matriz[i].length; j++) {
+                // Adiciona o número formatado com 3 espaços ao StringBuilder
+                sb.append(String.format("%3d", matriz[i][j]));
+
+                // Adiciona um espaço entre os números, exceto após o último número da linha
+                if (j < matriz[i].length - UM) {
+                    sb.append(" ");
+                }
+            }
+            // Adiciona a quebra de linha após cada linha da matriz
+            sb.append("\n");
+        }
+
+        // Imprime a string construída pelo StringBuilder
+        System.out.print(sb.toString());
+    }
+
+    public static void main(String[] args) {
+        // Cria um objeto Scanner para ler entradas do usuário
+        Scanner scanner = new Scanner(System.in);
+
+        // Laço para continuar até que o valor 0 seja lido
+        while (true) {
+            // Lê o valor N da entrada
+            int N = scanner.nextInt();
+
+            // Se N for 0, o programa deve terminar
+            if (N == ZERO) {
+                break;  // Finaliza o programa
+            }
+
+            // Chama a função para gerar a matriz de ordem N
+            int[][] matriz = gerarMatriz(N);
+
+            // Imprime a matriz gerada
+            imprimirMatriz(matriz);
+
+            // Imprime uma linha em branco após cada matriz
+            System.out.println();
+        }
+
+        // Fecha o scanner para liberar os recursos
+        scanner.close();
+    }
+}
