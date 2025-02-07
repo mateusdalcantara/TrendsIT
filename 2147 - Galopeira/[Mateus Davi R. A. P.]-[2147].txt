@@ -1,0 +1,68 @@
+import java.util.Scanner;
+import java.text.DecimalFormat;
+import java.util.Locale;
+
+public class Main {
+
+    /**
+     * Este programa simula o tempo necessário para digitar uma palavra
+     * considerando que cada tecla pressionada leva 1 centésimo de segundo.
+     * Para palavras com letras repetidas consecutivas, cada repetição de tecla
+     * é considerada um pressionamento adicional.
+     * <p>
+     * A entrada consiste em múltiplos casos de teste, onde cada caso é uma palavra.
+     * A saída é o tempo total em segundos, formatado com duas casas decimais.
+     * <p>
+     * Exemplo de uso:
+     * <p>
+     * 3
+     * galopeira
+     * 0.09
+     * galopeeira
+     * 0.10
+     * galopeeeeeeeeeeeeeeeeeira
+     * 0.25
+     */
+    public static void main(String[] args) {
+        final int ZERO = 0;
+        final double UMDECIMO = 0.01;
+
+        // Configura a localidade para garantir o uso de ponto como separador decimal
+        Locale.setDefault(Locale.US);
+
+        // Formatação para 2 casas decimais com ponto como separador decimal
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        // Criação do objeto Scanner para ler os dados de entrada
+        Scanner input = new Scanner(System.in);
+
+        // Lê o número de casos de teste
+        int C = input.nextInt();
+        input.nextLine();  // Consome a linha em branco após o número
+
+        // Processa cada caso de teste
+        for (int i = ZERO; i < C; i++) {
+            // Lê a palavra digitada
+            String palavra = input.nextLine();
+
+            // Inicializa a contagem de teclas pressionadas
+            int teclasPressionadas = ZERO;
+
+            // Conta as teclas pressionadas, considerando cada letra digitada
+            // como um pressionamento de tecla, independentemente de repetição
+            for (int j = ZERO; j < palavra.length(); j++) {
+                teclasPressionadas++; // Aumenta o contador para cada letra
+            }
+
+            // Calcula o tempo total (em segundos), onde cada tecla leva 0.01 segundos
+            double tempo = teclasPressionadas * UMDECIMO; // UMDECIMO = 0.01
+
+            // Imprime o tempo com 2 casas decimais usando a formatação correta
+            System.out.println(df.format(tempo));
+        }
+
+        // Fecha o scanner para liberar os recursos do sistema
+        input.close();
+
+    }
+}
