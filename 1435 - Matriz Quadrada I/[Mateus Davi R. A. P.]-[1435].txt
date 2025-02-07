@@ -1,0 +1,120 @@
+import java.io.IOException;
+import java.util.Scanner;
+
+/**
+ * O programa le varias ordens de matrizes quadradas e gera a matriz correspondente com base em um padrao especifico.
+ * Cada matriz e preenchida com camadas de numeros que começam do valor 1 na borda externa e aumentam conforme
+ * se aproxima do centro. O programa continua a ler tamanhos de matrizes ate que uma entrada de valor zero (0) seja
+ * fornecida, indicando o fim da execucao.
+ * <p>
+ * Para cada valor N fornecido, o programa cria uma matriz de tamanho NxN. Cada celula da matriz contem um numero
+ * que representa sua camada, começando de 1 na borda e aumentando conforme se aproxima do centro. O numero nas
+ * camadas segue o valor maximo entre as distancias do elemento para as bordas.
+ * <p>
+ * Exemplo de funcionamento:
+ * Se a entrada for:
+ * <pre>
+ * 1
+ * 2
+ * 3
+ * 4
+ * 5
+ * 0
+ * </pre>
+ * A saida sera:
+ * <pre>
+ *   1
+ *
+ *   1   1
+ *   1   1
+ *
+ *   1   1   1
+ *   1   2   1
+ *   1   1   1
+ *
+ *   1   1   1   1
+ *   1   2   2   1
+ *   1   2   2   1
+ *   1   1   1   1
+ *
+ *   1   1   1   1   1
+ *   1   2   2   2   1
+ *   1   2   3   2   1
+ *   1   2   2   2   1
+ *   1   1   1   1   1
+ * </pre>
+ * O programa ira gerar as matrizes ate que um valor zero seja fornecido.
+ * <p>
+ * Limitacao: O programa permite matrizes com tamanhos entre 1 e 1000.
+ *
+ */
+public class Main {
+
+    /**
+     * Metodo principal que executa o programa. O programa le entradas de tamanhos de matrizes e imprime as matrizes
+     * correspondentes ate encontrar o valor 0, que indica o fim da execucao.
+     * <p>
+     * A entrada consiste em varios inteiros representando o tamanho da matriz a ser criada. A matriz sera gerada
+     * conforme o valor do numero fornecido.
+     * <p>
+     * A saida de cada matriz sera formatada com os numeros justificados a direita em um campo de tamanho 3, separados
+     * por espacos. Apos a impressao de cada matriz, sera impressa uma linha em branco.
+     * <p>
+     * Limitacao: O programa limita o tamanho da matriz a valores entre 1 e 1000.
+     */
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        final int ZERO = 0;
+        final int UM = 1;
+        final int MIL = 1000;
+
+        // Loop para ler os tamanhos das matrizes
+        while (true) {
+            // Leitura da ordem da matriz
+            int N = scanner.nextInt();
+
+            // Se N for 0, o programa termina
+            if (N == ZERO) {
+                break;
+            }
+
+            // Limitar o tamanho da matriz (exemplo: 1 a 1000)
+            if (N < UM || N > MIL) {
+                System.out.println("Tamanho da matriz fora do intervalo permitido (1 a 1000).");
+                continue;
+            }
+
+            // Criar a matriz de tamanho N x N
+            int[][] matriz = new int[N][N];
+
+            // Preencher a matriz com os valores correspondentes as camadas
+            for (int i = ZERO; i < N; i++) {
+                for (int j = ZERO; j < N; j++) {
+                    // A camada da celula e o valor maximo entre a distancia do elemento para as bordas
+                    int camada = Math.min(Math.min(i, j), Math.min(N - UM - i, N - UM - j)) + UM;
+                    matriz[i][j] = camada;
+                }
+            }
+
+            // Imprimir a matriz com formatacao adequada
+            StringBuilder sb = new StringBuilder();  // Usando StringBuilder para reduzir o custo de impressao
+            for (int i = ZERO; i < N; i++) {
+                for (int j = ZERO; j < N; j++) {
+                    // Imprimir cada numero com 3 espacos justificados a direita
+                    sb.append(String.format("%3d", matriz[i][j]));
+                    if (j < N - UM) {
+                        sb.append(" ");  // Separar os numeros com um espaco
+                    }
+                }
+                sb.append("\n");  // Nova linha apos cada linha da matriz
+            }
+
+            // Imprimir a matriz gerada
+            System.out.print(sb.toString());
+            System.out.println();  // Imprimir linha em branco apos a matriz
+        }
+
+        // Fechar o scanner
+        scanner.close();
+    }
+}
