@@ -1,0 +1,46 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Leitura contínua de linhas
+        while (scanner.hasNextLine()) {
+            String linha = scanner.nextLine();
+            StringBuilder resultado = new StringBuilder();
+            boolean italico = false;
+            boolean negrito = false;
+
+            // Processa cada caractere da linha
+            for (int i = 0; i < linha.length(); i++) {
+                char c = linha.charAt(i);
+
+                if (c == '_') {
+                    // Alterna entre abrir e fechar a tag <i>
+                    if (italico) {
+                        resultado.append("</i>");
+                    } else {
+                        resultado.append("<i>");
+                    }
+                    italico = !italico;
+                } else if (c == '*') {
+                    // Alterna entre abrir e fechar a tag <b>
+                    if (negrito) {
+                        resultado.append("</b>");
+                    } else {
+                        resultado.append("<b>");
+                    }
+                    negrito = !negrito;
+                } else {
+                    // Apenas escreve o caractere
+                    resultado.append(c);
+                }
+            }
+
+            // Imprime o resultado da linha processada
+            System.out.println(resultado.toString());
+        }
+
+        scanner.close();
+    }
+}
