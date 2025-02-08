@@ -1,0 +1,67 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+/**
+ * O programa lê uma sequência de números,
+ * conta a frequência de ocorrência de cada número, e imprime a
+ * quantidade de vezes que cada número aparece, desde que o número
+ * esteja no intervalo permitido (1 ≤ X ≤ 2000) e não tenha sido inserido
+ * mais de 20 vezes.
+ */
+public class Main {
+
+    /**
+     * O ponto de entrada principal do programa. Lê os números de entrada,
+     * conta suas ocorrências, verifica se os números estão dentro do intervalo permitido,
+     * e imprime a quantidade de vezes que cada número apareceu.
+     *
+     * @param args Argumentos da linha de comando (não são utilizados neste programa).
+     */
+    public static void main(String[] args) {
+
+        final int ZERO = 0;
+        final int UM = 1;
+        final int VINTE = 20;
+        final int DOISMIL = 2000;
+
+        // Cria um objeto Scanner para ler entradas do usuário
+        Scanner scanner = new Scanner(System.in);
+
+        // Le o numero de entradas
+        int N = Integer.parseInt(scanner.nextLine());
+
+        // Usa um Map para armazenar as ocorrencias dos numeros
+        Map<Integer, Integer> contagem = new HashMap<>();
+
+        // Le os numeros e conta suas ocorrencias
+        for (int i = ZERO; i < N; i++) {
+            int numero = Integer.parseInt(scanner.nextLine());
+
+            // Verifica se o numero esta dentro do intervalo permitido
+            if (numero < UM || numero > DOISMIL) {
+                System.out.println("Numero fora do intervalo permitido (1 ≤ X ≤ 2000).");
+                continue; // Ignora o numero fora do intervalo
+            }
+
+            // Verifica se o número ja foi inserido e se a contagem e menor que 20
+            if (contagem.containsKey(numero)) {
+                if (contagem.get(numero) >= VINTE) {
+                    continue;
+                }
+                contagem.put(numero, contagem.get(numero) + UM); // Incrementa a contagem do numero
+                System.out.println("A");
+            } else {
+                contagem.put(numero, UM); // Se o numero nao foi inserido, adiciona com contagem 1
+                System.out.println("B");
+            }
+        }
+
+        // Ordena os numeros distintos em ordem crescente
+        contagem.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey()) // Ordena as chaves do Map
+                .forEach(entry ->
+                        // Imprime o numero e sua contagem
+                        System.out.println(entry.getKey() + " aparece " + entry.getValue() + " vez(es)"));
+    }
+}
