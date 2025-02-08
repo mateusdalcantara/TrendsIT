@@ -1,0 +1,51 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
+/**
+ * Este programa conta a frequência das letras em um texto,
+ * encontra as letras mais frequentes e as imprime em ordem alfabética.
+ * O código trata múltiplos casos de teste e ignora distinção entre maiúsculas e minúsculas.
+ */
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Lê o número de casos de teste
+        int N = Integer.parseInt(scanner.nextLine());
+
+        for (int i = 0; i < N; i++) {
+            String texto = scanner.nextLine().toLowerCase(); // Lê o texto e converte para minúsculas
+            int[] frequencia = new int[26]; // Array para contar a frequência de cada letra (a-z)
+
+            // Conta a frequência de cada letra no texto
+            for (int j = 0; j < texto.length(); j++) {
+                char c = texto.charAt(j);
+                if (c >= 'a' && c <= 'z') {
+                    frequencia[c - 'a']++;
+                }
+            }
+
+            // Encontra a maior frequência
+            int maxFrequencia = Arrays.stream(frequencia).max().getAsInt();
+
+            // Coleta as letras com a maior frequência
+            StringBuilder letrasMaisFrequentes = new StringBuilder();
+            for (int j = 0; j < 26; j++) {
+                if (frequencia[j] == maxFrequencia) {
+                    letrasMaisFrequentes.append((char) ('a' + j));
+                }
+            }
+
+            // Ordena as letras em ordem alfabética
+            char[] letrasOrdenadas = letrasMaisFrequentes.toString().toCharArray();
+            Arrays.sort(letrasOrdenadas);
+
+            // Imprime as letras mais frequentes
+            System.out.println(new String(letrasOrdenadas));
+        }
+
+        // Fecha o scanner
+        scanner.close();
+    }
+}
