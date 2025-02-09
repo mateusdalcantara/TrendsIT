@@ -1,0 +1,62 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        // Definindo constantes para facilitar a leitura do código
+        final int ZERO = 0;          // Valor zero
+        final int UM = 1;            // Valor um
+        final int DOIS = 2;          // Valor dois
+        final int CEMMIL = 100000;   // Valor máximo permitido para N
+
+        // Cria um objeto Scanner para ler a entrada do usuário
+        Scanner scanner = new Scanner(System.in);
+
+        // Le o valor de N (quantidade de numeros que serao inseridos)
+        int N = Integer.parseInt(scanner.nextLine());
+
+        // Verifica se o valor de N esta dentro do intervalo permitido (1 < N <= 10^5)
+        if (N <= UM || N > CEMMIL) {
+            System.out.println("Nao pode ser um inteiro positivo no intervalo 1 < N <= 10^5.");
+            return;  // Se N nao estiver no intervalo valido, encerra o programa
+        }
+
+        // Inicializa as listas para armazenar numeros pares e ímpares
+        List<Integer> pares = new ArrayList<>();
+        List<Integer> impares = new ArrayList<>();
+
+        // Le os N numeros e separa-os em listas de pares e ímpares
+        for (int i = ZERO; i < N; i++) {
+            // Le um numero da entrada
+            int numero = Integer.parseInt(scanner.nextLine());
+
+            // Se o numero for par, adiciona a lista de pares, caso contrario, adiciona a lista de ímpares
+            if (numero % DOIS == ZERO) {
+                pares.add(numero);
+            } else {
+                impares.add(numero);
+            }
+        }
+
+        // Ordena a lista de numeros pares em ordem crescente
+        Collections.sort(pares);
+
+        // Ordena a lista de numeros ímpares em ordem decrescente
+        impares.sort((a, b) -> b.compareTo(a));
+
+        // Exibe os numeros pares ordenados
+        for (int par : pares) {
+            System.out.println(par);
+        }
+
+        // Exibe os numeros Impares ordenados
+        for (int impar : impares) {
+            System.out.println(impar);
+        }
+
+        // Fecha o scanner para liberar recursos
+        scanner.close();
+    }
+}
