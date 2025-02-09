@@ -1,0 +1,64 @@
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        final int ZERO = 0;
+        final int UM = 1;
+        final int CINQUENTA = 50;
+
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            // Le o valor de n
+            int n = Integer.parseInt(scanner.nextLine());
+
+            // Se n for 0, encerra o programa
+            if (n == ZERO) {
+                break;
+            }
+
+            // Verifica se n está no intervalo valido (1 ≤ n ≤ 50)
+            if (n < UM || n > CINQUENTA) {
+                System.out.println("Nao deve estar no intervalo 1 ≤ n ≤ 50.");
+                continue; // Pula para o próximo caso de teste
+            }
+
+            // Cria um deque para simular a pilha de cartas
+            Deque<Integer> cartas = new LinkedList<>();
+
+            // Preenche o deque com as cartas de 1 a n
+            for (int i = UM; i <= n; i++) {
+                cartas.offer(i);
+            }
+
+            // Lista para armazenar as cartas descartadas
+            StringBuilder discarded = new StringBuilder();
+
+            // Processa as cartas ate sobrar apenas uma
+            while (cartas.size() > UM) {
+                // Descarta a carta do topo
+                discarded.append(cartas.poll()).append(", ");
+
+                // Move a proxima carta para o final da fila
+                cartas.offer(cartas.poll());
+            }
+
+            // Imprime as cartas descartadas
+            System.out.print("Discarded cards: ");
+            if (discarded.length() > 0) {
+                System.out.println(discarded.substring(0, discarded.length() - 2));  // Remove a vírgula extra
+            } else {
+                System.out.println();
+            }
+
+            // Imprime a carta restante
+            System.out.println("Remaining card: " + cartas.poll());
+        }
+
+        // Fecha o scanner
+        scanner.close();
+    }
+}
