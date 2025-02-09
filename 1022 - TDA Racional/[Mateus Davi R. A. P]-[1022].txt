@@ -1,0 +1,137 @@
+/**
+ * Programa para realizar operações com frações (soma, subtração, multiplicação e divisão) e simplificar o resultado.
+ * <p>
+ * O código realiza a leitura de múltiplos casos de teste, em que cada caso contém uma expressão envolvendo
+ * duas frações e um operador aritmético.
+ * Após calcular a operação, o programa simplifica o resultado utilizando o Máximo Divisor Comum (MDC) e imprime o
+ * resultado tanto no formato original quanto simplificado.
+ * <p>
+ * Detalhamento das funções e componentes do programa:
+ * <p>
+ * 1. Funções:
+ * <p>
+ * - MDC(int a, int b): Calcula o Máximo Divisor Comum (MDC) entre dois números inteiros usando o Algoritmo de
+ * Euclides. O MDC é utilizado para simplificar as frações.
+ * - Simplificar(int numerador, int denominador): Simplifica a fração fornecida, dividindo o numerador e
+ * denominador pelo MDC. A função também garante que o denominador seja sempre positivo.
+ * <p>
+ * 2. Variáveis:
+ * - ZERO, UM, DOIS, TRES, QUATRO, SEIS: Constantes usadas para representar índices de arrays e simplificar o código.
+ * <p>
+ * 3. Operações:
+ * - O programa lida com as operações aritméticas entre frações: soma, subtração, multiplicação e divisão.
+ * As frações são representadas como "numerador/denominador".
+ * - As operações entre frações são realizadas com base em regras matemáticas padrão:
+ * - Soma e subtração: ajuste do denominador para o mínimo comum e cálculo do numerador resultante.
+ * - Multiplicação: multiplicação dos numeradores e denominadores.
+ * - Divisão: multiplicação do numerador da primeira fração pelo denominador da segunda e vice-versa.
+ * <p>
+ * Exemplo de entrada:
+ * 2
+ * 1 2 + 3 4
+ * 3 4 * 5 6
+ * <p>
+ * Exemplo de saída:
+ * 5/4 = 5/4
+ * 15/24 = 5/8
+ * <p>
+ * O programa funciona da seguinte maneira:
+ * 1. Lê o número de casos de teste.
+ * 2. Para cada caso de teste, lê as frações e o operador.
+ * 3. Realiza a operação aritmética com as frações.
+ * 4. Simplifica o resultado.
+ * 5. Exibe a fração original e o resultado simplificado.
+ * <p>
+ * Autor: [Seu Nome]
+ * Data: [Data de Criação]
+ */
+
+import java.util.Scanner;
+
+public class Main {
+    static final int ZERO = 0;
+    static final int UM = 1;
+    static final int DOIS = 2;
+    static final int TRES = 3;
+    static final int QUATRO = 4;
+    static final int SEIS = 6;
+
+    // Funcao para calcular o Maximo Divisor Comum (MDC) entre dois numeros
+    static int MDC(int a, int b) {
+        while (b != ZERO) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    // Funcao para simplificar uma fracao, retornando o resultado como uma String
+    static String Simplificar(int numerador, int denominador) {
+        int mdc = MDC(Math.abs(numerador), Math.abs(denominador));  // Calcula o MDC
+        numerador /= mdc;  // Divide o numerador pelo MDC
+        denominador /= mdc;  // Divide o denominador pelo MDC
+
+        // Se o denominador for negativo, ajusta para que seja sempre positivo
+        if (denominador < ZERO) {
+            numerador *= -UM;
+            denominador *= -UM;
+        }
+
+        // Retorna a fracao simplificada
+        return numerador + "/" + denominador;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Le o numero de casos de teste
+        int N = Integer.parseInt(scanner.nextLine());
+
+        // Loop para processar cada caso de teste
+        for (int i = ZERO; i < N; i++) {
+            // Le a expressão de frações
+            String[] expressao = scanner.nextLine().split(" ");
+
+            // Extrai os valores das fracoes e do operador
+            int N1 = Integer.parseInt(expressao[ZERO]);
+            int D1 = Integer.parseInt(expressao[DOIS]);
+            char operador = expressao[TRES].charAt(ZERO);
+            int N2 = Integer.parseInt(expressao[QUATRO]);
+            int D2 = Integer.parseInt(expressao[SEIS]);
+
+            // Variaveis para armazenar o resultado da operacao
+            int numeradorResultado = ZERO;
+            int denominadorResultado = D1 * D2;
+
+            // Realiza a operacao aritmetica de acordo com o operador
+            switch (operador) {
+                case '+':
+                    numeradorResultado = N1 * D2 + N2 * D1;
+                    break;
+                case '-':
+                    numeradorResultado = N1 * D2 - N2 * D1;
+                    break;
+                case '*':
+                    numeradorResultado = N1 * N2;
+                    denominadorResultado = D1 * D2;
+                    break;
+                case '/':
+                    numeradorResultado = N1 * D2;
+                    denominadorResultado = N2 * D1;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Operador inválido.");
+            }
+
+            // Simplifica o resultado da operacao
+            String resultadoSimplificado = Simplificar(numeradorResultado, denominadorResultado);
+
+            // Exibe o resultado final
+            System.out.println(numeradorResultado + "/" + denominadorResultado + " = " + resultadoSimplificado);
+        }
+
+        scanner.close();
+    }
+}
+
