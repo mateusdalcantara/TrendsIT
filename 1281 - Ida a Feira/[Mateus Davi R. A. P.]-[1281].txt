@@ -1,0 +1,48 @@
+#include <iostream>
+#include <map>
+#include <iomanip>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+   int N;  // Quantidade de idas à feira
+   cin >> N;
+
+   for (int i = 0; i < N; i++)
+      {
+         int M;  // Número de produtos disponíveis na feira
+         cin >> M;
+
+         map<string, double> produtos;  // Mapeia o nome do produto para seu preço
+
+         // Lê os produtos disponíveis e seus preços
+         for (int j = 0; j < M; j++)
+            {
+               string nome;
+               double preco;
+               cin >> nome >> preco;
+               produtos[nome] = preco;
+            }
+
+         int P;  // Número de produtos que Dona Parcinova deseja comprar
+         cin >> P;
+
+         double total = 0.0;  // Total gasto
+
+         // Lê os produtos que Dona Parcinova deseja comprar
+         for (int k = 0; k < P; k++)
+            {
+               string nome;
+               int quantidade;
+               cin >> nome >> quantidade;
+               total += produtos[nome] * quantidade;  // Acumula o valor total
+            }
+
+         // Exibe o total formatado com 2 casas decimais
+         cout << "R$ " << fixed << setprecision(2) << total << endl;
+      }
+
+   return 0;
+}
