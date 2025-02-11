@@ -1,0 +1,113 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+   string tipo, classe, alimentacao;
+
+   // Entrada das 3 palavras
+   cin >> tipo >> classe >> alimentacao;
+
+   // Mapeia as palavras para números inteiros para usar no switch
+   int tipoIndex = (tipo == "vertebrado") ? 1 : 2;
+   int classeIndex = 0;
+   int alimentacaoIndex = 0;
+
+   // Mapeando a classe
+   if (classe == "mamifero")
+      {
+         classeIndex = 1;
+      }
+   else if (classe == "ave")
+      {
+         classeIndex = 2;
+      }
+   else if (classe == "anelideo")
+      {
+         classeIndex = 3;
+      }
+   else if (classe == "inseto")
+      {
+         classeIndex = 4;
+      }
+
+   // Mapeando a alimentação
+   if (alimentacao == "onivoro")
+      {
+         alimentacaoIndex = 1;
+      }
+   else if (alimentacao == "herbivoro")
+      {
+         alimentacaoIndex = 2;
+      }
+   else if (alimentacao == "carnivoro")
+      {
+         alimentacaoIndex = 3;
+      }
+   else if (alimentacao == "hematofago")
+      {
+         alimentacaoIndex = 4;
+      }
+
+   // Utilizando o switch case
+   switch (tipoIndex)
+      {
+      case 1: // vertebrado
+         switch (classeIndex)
+            {
+            case 1: // mamifero
+               switch (alimentacaoIndex)
+                  {
+                  case 1: // onivoro
+                     cout << "homem" << endl;
+                     break;
+                  case 2: // herbivoro
+                     cout << "vaca" << endl;
+                     break;
+                  }
+               break;
+            case 2: // ave
+               switch (alimentacaoIndex)
+                  {
+                  case 3:// carnivoro
+                     cout << "aguia" << endl;
+                     break;
+                  case 1:// onivoro
+                     cout << "pomba" << endl;
+                     break;
+                  }
+               break;
+            }
+         break;
+      case 2: // invertebrado
+         switch (classeIndex)
+            {
+            case 3: // anelideo
+               switch (alimentacaoIndex)
+                  {
+                  case 4: // hematofago
+                     cout << "sanguessuga" << endl;
+                     break;
+                  case 1: // onivoro
+                     cout<< "minhoca" << endl;
+                  }
+               break;
+            case 4: // inseto
+               switch (alimentacaoIndex)
+                  {
+                  case 4: // hematofago
+                     cout << "pulga" << endl;
+                     break;
+                  case 2:// herbivoro
+                     cout << "lagarta" << endl;
+                     break;
+                  }
+               break;
+            }
+         break;
+      }
+
+   return 0;
+}
