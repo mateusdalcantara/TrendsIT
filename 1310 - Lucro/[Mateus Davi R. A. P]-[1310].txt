@@ -1,0 +1,36 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+
+int main() {
+    int N;
+
+    while (cin >> N) {  // Leitura até o final do arquivo
+        int custoPorDia;
+        cin >> custoPorDia;
+
+        vector<int> receita(N);
+        for (int i = 0; i < N; i++) {
+            cin >> receita[i];
+        }
+
+        int maxLucro = 0;  // Inicializa o lucro máximo como 0 (caso não haja lucro positivo)
+
+        // Tenta todos os intervalos de dias
+        for (int i = 0; i < N; i++) {
+            int somaReceitas = 0;
+            for (int j = i; j < N; j++) {
+                somaReceitas += receita[j];
+                int dias = j - i + 1;
+                int lucro = somaReceitas - dias * custoPorDia;
+                maxLucro = max(maxLucro, lucro);
+            }
+        }
+
+        cout << maxLucro << endl;
+    }
+
+    return 0;
+}
