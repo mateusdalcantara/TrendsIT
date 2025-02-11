@@ -1,0 +1,45 @@
+#include <iostream>
+using namespace std;
+
+class URI {
+private:
+    // Variável estática que conta quantas chamadas a função Fibonacci fez.
+    static int numCalls;
+
+    // Função recursiva para calcular o valor de Fibonacci.
+    // Recebe um número inteiro n e retorna o n-ésimo número de Fibonacci.
+    // A função também conta o número de chamadas recursivas feitas.
+    static int Fibonacci(int n) {
+        numCalls++;  // Incrementa o contador de chamadas
+        if (n == 0) return 0;  // Caso base: Fibonacci(0) = 0
+        if (n == 1) return 1;  // Caso base: Fibonacci(1) = 1
+        return Fibonacci(n - 1) + Fibonacci(n - 2);  // Recursão: Fibonacci(n) = Fibonacci(n-1) + Fibonacci(n-2)
+    }
+
+public:
+    // Função principal de execução do programa.
+    // Recebe múltiplos valores de entrada, chama a função Fibonacci para cada valor
+    // e imprime o resultado junto com o número de chamadas feitas.
+    static void Run() {
+        int N;
+        cin >> N;  // Lê o número de casos de teste
+
+        for (int i = 0; i < N; i++) {
+            int X;
+            cin >> X;  // Lê o valor X para o qual calcular Fibonacci
+            numCalls = 0;  // Reseta o contador de chamadas
+            int result = Fibonacci(X);  // Calcula o Fibonacci de X
+            // Exibe o resultado no formato: fib(X) = numCalls calls = result
+            cout << "fib(" << X << ") = " << numCalls - 1 << " calls = " << result << endl;
+        }
+    }
+};
+
+// Inicializa a variável estática numCalls com o valor 0
+int URI::numCalls = 0;
+
+int main() {
+    // Chama o método Run da classe URI para iniciar a execução
+    URI::Run();
+    return 0;
+}
