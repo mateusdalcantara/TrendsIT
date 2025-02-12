@@ -1,0 +1,69 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class Main {
+    // Definição de limites do problema
+    private static final int MAX_PIZZAS = 40;  // Máximo de pizzas disponíveis
+    private static final int MAX_PEDIDOS = 30; // Máximo de pedidos feitos
+    private static final int MAX_TEMPO = 100;  // Tempo máximo de entrega
+
+    // Vetores que armazenam a quantidade de pizzas de cada pedido e o tempo total de entrega
+    private static int[] quantidadePizzas = new int[MAX_PIZZAS];
+    private static int[] tempoEntrega = new int[MAX_PEDIDOS];
+
+    private static int[][] memo = new int[MAX_TEMPO][MAX_TEMPO];
+    
+    private static int atendimento(int pedidos, int pizzas) {
+        // Caso base: se não houver pedidos ou se o limite de pizzas for 0
+        if (pedidos < 0 || pizzas <= 0) {
+            return 0;
+        }
+
+        // Retorna o valor já calculado (evita recomputação)
+        if (memo[pedidos][pizzas] != -1) {
+            return memo[pedidos][pizzas];
+        }
+
+        // Se o pedido atual exige mais pizzas do que o disponível, ignoramos esse pedido
+        if (quantidadePizzas[pedidos] > pizzas) {
+            return memo[pedidos][pizzas] = atendimento(pedidos - 1, pizzas);
+        }
+
+        // Escolha entre pegar o pedido ou ignorá-lo
+        return memo[pedidos][pizzas] = Math.max(
+                atendimento(pedidos - 1, pizzas), // Ignorar o pedido atual
+                atendimento(pedidos - 1, pizzas - quantidadePizzas[pedidos]) + tempoEntrega[pedidos] // Aceitar o pedido
+        );
+    }
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        while (input.hasNextInt()) {
+            int numeroDePedidos = input.nextInt();
+
+            // Se não houver pedidos, encerra o programa
+            if (numeroDePedidos == 0) {
+                break;
+            }
+
+            // Reseta a matriz de memorização para -1
+            for (int[] row : memo) {
+                Arrays.fill(row, -1);
+            }
+
+            int maximoPizzas = input.nextInt(); // Número máximo de pizzas disponíveis
+
+            // Leitura dos pedidos: tempo de entrega e quantidade de pizzas
+            for (int i = 0; i < numeroDePedidos; ++i) {
+                tempoEntrega[i] = input.nextInt();
+                quantidadePizzas[i] = input.nextInt();
+            }
+
+            // Chama a função knapsack e exibe o tempo máximo possível de entrega
+            System.out.println(atendimento(numeroDePedidos - 1, maximoPizzas) + " min.");
+        }
+
+        input.close();
+    }
+}
