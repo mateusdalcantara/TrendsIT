@@ -1,0 +1,35 @@
+palavras = int(input())
+
+# Processa cada palavra
+for _ in range(palavras):
+
+    # Dicionário para armazenar as traduções
+    dicionario_traducoes = {}
+
+    # Lê o número de palavras e o número de frases a serem processadas
+    num_palavras, num_frases = map(int, input().split())
+
+    # Lê as traduções para as palavras
+    for _ in range(num_palavras):
+        palavra_original = input()  # A palavra original
+        traducao = input()  # A tradução correspondente
+        dicionario_traducoes[palavra_original] = traducao  # Adiciona ao dicionário
+
+    # Processa cada frase a ser traduzida
+    for _ in range(num_frases):
+        frase = input().split()  # Divide a frase em palavras
+        frase_traduzida = []  # Lista para armazenar a tradução da frase
+
+        # Traduz cada palavra na frase
+        for palavra in frase:
+            if palavra in dicionario_traducoes:
+                # Se a palavra tiver tradução, usa a tradução
+                frase_traduzida.append(dicionario_traducoes[palavra])
+            else:
+                # Se não tiver tradução, mantém a palavra original
+                frase_traduzida.append(palavra)
+
+        # Exibe a frase traduzida
+        print(" ".join(frase_traduzida))
+
+    print('')
