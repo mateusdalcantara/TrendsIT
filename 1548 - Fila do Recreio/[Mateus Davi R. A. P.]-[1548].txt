@@ -1,0 +1,71 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+
+/**
+ * Este programa resolve um problema de ordenação de notas de alunos.
+ * <p>
+ * Ele recebe um número de casos de teste e, para cada caso, recebe as notas de um número de alunos.
+ * A tarefa é ordenar as notas dos alunos em ordem decrescente e contar quantos alunos não mudaram sua posição
+ * original após a ordenação.
+ * <p>
+ * Entrada:
+ * O programa começa lendo um número inteiro 'n', que representa o número de casos de teste.
+ * Para cada caso de teste, o programa lê o número de alunos e suas respectivas notas.
+ * <p>
+ * Saída:
+ * Para cada caso de teste, o programa imprime um número inteiro que representa a quantidade de alunos
+ * que não trocaram de lugar após a ordenação das notas.
+ */
+public class Main {
+    static final int ZERO = 0;
+    static final int UM = 1;
+
+    // Função para processar cada caso de teste
+    public static int processTestCase(int m, int[] grades) {
+        // Criar uma lista de pares (nota, posição original)
+        List<int[]> gradesIndexada = new ArrayList<>();
+        for (int i = ZERO; i < m; i++) {
+            gradesIndexada.add(new int[]{grades[i], i});
+        }
+
+        // Ordenar a lista pela nota de forma decrescente
+        gradesIndexada.sort((a, b) -> Integer.compare(b[ZERO], a[ZERO]));
+
+        // Contar quantos alunos não trocaram de lugar
+        int naoTrocouDeLugar = ZERO;
+        for (int i = ZERO; i < gradesIndexada.size(); i++) {
+            if (gradesIndexada.get(i)[UM] == i) {
+                naoTrocouDeLugar++;
+            }
+        }
+
+        return naoTrocouDeLugar;
+    }
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        // Ler o numero de casos de teste
+        int n = input.nextInt();
+
+        // Processar cada caso de teste
+        for (int i = ZERO; i < n; i++) {
+            // Ler o numero de alunos
+            int m = input.nextInt();
+
+            // Ler as notas dos alunos
+            int[] grades = new int[m];
+            for (int j = ZERO; j < m; j++) {
+                grades[j] = input.nextInt();
+            }
+
+            // Processar o caso e imprimir o resultado
+            int result = processTestCase(m, grades);
+            System.out.println(result);
+        }
+
+        input.close();
+    }
+}
