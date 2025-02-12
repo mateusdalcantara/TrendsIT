@@ -1,0 +1,77 @@
+#include <iostream>
+#include <cstring>  // Para memset
+#include <vector>   // Para armazenar a lista de carneiros
+
+using namespace std;
+
+int main()
+{
+   // Vetor booleano para marcar quais estrelas foram visitadas
+   bool visitado[1000001];
+
+   // Vetor para armazenar a quantidade de carneiros em cada estrela
+   vector<int> carneirosPorEstrela;
+
+   // Variáveis principais
+   int numEstrelas, estrelasAtacadas;
+   unsigned long long int carneirosRestantes; // Usamos unsigned long long para evitar overflow
+
+   // Leitura do número total de estrelas (sítios)
+   cin >> numEstrelas;
+
+   // Inicializa o vetor de carneiros com tamanho N
+   carneirosPorEstrela.assign(numEstrelas, 0);
+
+   // Inicializa o vetor visitado como falso para todas as posições
+   memset(visitado, false, sizeof(visitado));
+
+   // Leitura da quantidade de carneiros em cada estrela e soma total de carneiros
+   carneirosRestantes = 0;
+   for (int i = 0; i < numEstrelas; ++i)
+      {
+         cin >> carneirosPorEstrela[i];
+         carneirosRestantes += carneirosPorEstrela[i]; // Acumulando o total de carneiros
+      }
+
+   // Inicializa a posição do irmão louco na primeira estrela
+   int posicaoAtual = 0;
+   estrelasAtacadas = 0;
+
+   // Simula a jornada do irmão louco
+   while (posicaoAtual >= 0 && posicaoAtual < numEstrelas)
+      {
+         // Se a estrela ainda não foi atacada, conta como atacada
+         if (!visitado[posicaoAtual])
+            {
+               visitado[posicaoAtual] = true;
+               estrelasAtacadas += 1;
+            }
+
+         // Se houver carneiros, rouba um
+         if (carneirosPorEstrela[posicaoAtual] > 0)
+            {
+               carneirosPorEstrela[posicaoAtual] -= 1;
+               carneirosRestantes -= 1;
+            }
+         else
+            {
+               // Se não houver carneiros restantes, a jornada termina
+               break;
+            }
+
+         // Decide o próximo movimento baseado na quantidade de carneiros restante
+         if (carneirosPorEstrela[posicaoAtual] % 2 == 0)
+            {
+               posicaoAtual += 1; // Par → move-se para a direita
+            }
+         else
+            {
+               posicaoAtual -= 1; // Ímpar → move-se para a esquerda
+            }
+      }
+
+   // Exibe o número de estrelas atacadas e a quantidade total de carneiros restantes
+   cout << estrelasAtacadas << ' ' << carneirosRestantes << endl;
+
+   return 0;
+}
