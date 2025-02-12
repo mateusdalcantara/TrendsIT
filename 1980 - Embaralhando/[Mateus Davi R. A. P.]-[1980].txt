@@ -1,0 +1,53 @@
+import java.util.Scanner;
+
+/**
+ * O programa calcula o fatorial de números inteiros de 0 a 15
+ * e exibe o resultado baseado no comprimento da string de entrada.
+ */
+public class Main {
+
+    // Array para armazenar os fatoriais de 0 a 15
+    private static long[] fat = new long[16];
+
+    /**
+     * Calcula os fatoriais de 0 a 15 e os armazena no array 'fat'.
+     */
+    private static void calc() {
+        fat[0] = fat[1] = 1;  // Fatoriais de 0 e 1 são 1
+        for (int i = 2; i <= 15; ++i) {
+            fat[i] = i * fat[i - 1];  // Calculando o fatorial de i
+        }
+    }
+
+    /**
+     * Retorna o fatorial de um número n, onde 0 <= n <= 15.
+     *
+     * @param n O número para o qual o fatorial será retornado.
+     * @return O fatorial de n.
+     */
+    private static long solve(int n) {
+        return fat[n];  // Retorna o fatorial armazenado
+    }
+
+    /**
+     * O método principal que lê entradas do usuário e exibe o fatorial
+     * do comprimento da string inserida.
+     *
+     * O loop continua até que o usuário insira a string "0".
+     */
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);  // Criação do scanner para leitura de entradas
+        calc();  // Calcula os fatoriais de 0 a 15
+
+        // Loop para ler entradas e mostrar resultados
+        while (true) {
+            String s = scanner.next();  // Lê a próxima string
+            if (s.equals("0")) {
+                break;  // Encerra o loop caso a string seja "0"
+            }
+            System.out.println(solve(s.length()));  // Exibe o fatorial do comprimento da string
+        }
+
+        scanner.close();  // Fecha o scanner
+    }
+}
