@@ -1,0 +1,70 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class Main {
+
+    /**
+     * Método comparador que compara duas strings com base no seu comprimento.
+     * A comparação é feita de forma a ordenar as strings por ordem decrescente de comprimento.
+     *
+     * @return Um valor negativo se o comprimento de 'b' for maior que o de 'a',
+     *         um valor positivo se o comprimento de 'a' for maior que o de 'b',
+     *         e zero se os comprimentos forem iguais.
+     */
+    public static int comp(String a, String b){
+        // Compara os comprimentos de 'b' e 'a' para ordenar de forma decrescente
+        return b.length() - a.length();
+    }
+
+    /**
+     * Implementação do algoritmo de ordenação Insertion Sort para ordenar uma lista de strings.
+     * A lista é ordenada em ordem decrescente de comprimento das palavras.
+     *
+     * @param V A lista de palavras (strings) a ser ordenada.
+     */
+    public static void insertionSort(List<String> V){
+        // Itera pela lista de palavras, começando do segundo elemento
+        for(int i = 1; i < V.size(); ++i){
+            int j = i, k = j - 1;
+            // Enquanto houver elementos à esquerda e o atual for menor que o anterior (pela comparação de comprimento)
+            while(k > -1 && comp(V.get(j), V.get(k)) < 0){
+                // Troca as palavras de lugar
+                Collections.swap(V, j, k);
+                --j;
+                --k;
+            }
+        }
+    }
+
+    /**
+     * Método principal que executa o programa.
+     * Lê um número N de casos de teste, processa cada linha de palavras e
+     * imprime as palavras ordenadas em ordem decrescente de comprimento.
+     *
+     * @throws IOException Caso haja um erro na leitura da entrada
+     */
+    public static void main(String[] args) throws IOException {
+        // Inicializa o leitor de entrada
+        InputStreamReader isr = new InputStreamReader(System.in);
+        BufferedReader br = new BufferedReader(isr);
+
+        // Lê o número de casos de teste
+        int N = Integer.parseInt(br.readLine());
+
+        // Para cada caso de teste
+        for(int i = 0; i < N; ++i){
+            // Lê a linha de palavras, divide em um array de palavras e converte para uma lista
+            List<String> palavras = Arrays.asList(br.readLine().trim().split(" "));
+
+            // Ordena a lista de palavras
+            insertionSort(palavras);
+
+            // Imprime as palavras ordenadas, separadas por espaços
+            System.out.println(String.join(" ", palavras));
+        }
+    }
+}
