@@ -1,0 +1,278 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+
+/**
+ * O objetivo deste código é determinar se é viável ou inviável transportar todos os passageiros de várias cidades para
+ * uma cidade de destino, respeitando as capacidades dos voos entre as cidades. O problema é modelado como um problema de
+ * fluxo máximo em um grafo direcionado, onde cada cidade é um nó e cada voo é uma aresta com capacidade limitada.
+ * <p>
+ * As principais operações do código incluem a construção do grafo, a aplicação do algoritmo de Edmonds-Karp (fluxo máximo)
+ * e a verificação de viabilidade com base no fluxo máximo encontrado.
+ * <p>
+ * Exemplo de entrada e saída:
+ * <p>
+ * Exemplo de Entrada:
+ * 3
+ * boston    3
+ * sao-paulo 4
+ * waterloo  5
+ * 10 san-antonio
+ * atlanta   san-antonio 2
+ * boston    dallas      4
+ * dallas    san-antonio 3
+ * denver    san-antonio 3
+ * houston   san-antonio 6
+ * sao-paulo atlanta     2
+ * sao-paulo houston     3
+ * waterloo  atlanta     1
+ * waterloo  denver      3
+ * waterloo  houston     2
+ * 1
+ * san-francisco 11
+ * 7 new-york
+ * san-francisco denver   5
+ * san-francisco houston  6
+ * denver        atlanta  4
+ * denver        chicago  2
+ * houston       atlanta  5
+ * atlanta       now-york 7
+ * chicago       new-york 4
+ * 0
+ * <p>
+ * Exemplo de Saída:
+ * Instancia 1
+ * viavel
+ * Instancia 2
+ * inviavel
+ */
+public class Main {
+
+    /**
+     * A classe Aresta representa uma aresta no grafo. Cada aresta conecta dois nós
+     * (cidades) e tem uma capacidade associada (número máximo de passageiros) e um
+     * fluxo atual (quantidade de passageiros transportados). Além disso, cada aresta
+     * possui uma aresta residual associada, usada no algoritmo de fluxo máximo.
+     */
+    static class Aresta {
+        int destino, capacidade, fluxo;
+        Aresta residual;
+
+        /**
+         * Constrói uma aresta com destino 'destino' e capacidade 'capacidade'.
+         * O fluxo inicial é 0.
+         *
+         * @param destino    O índice do nó de destino.
+         * @param capacidade A capacidade máxima da aresta.
+         */
+        Aresta(int destino, int capacidade) {
+            this.destino = destino;
+            this.capacidade = capacidade;
+            this.fluxo = 0;
+        }
+    }
+
+    // Variáveis globais para armazenar o grafo, índice das cidades e outros dados
+    static Map<String, Integer> indiceDasCidades;
+    static List<List<Aresta>> grafo;
+    static int origem, destino;
+    static int[] pais;
+    static Aresta[] arestaPai;
+
+    /**
+     * Método principal que processa várias instâncias de entrada e calcula o fluxo
+     * máximo para cada uma. Verifica se é viável transportar todos os passageiros
+     * para o destino dado os voos e as capacidades.
+     *
+     * @param args Argumentos de linha de comando (não utilizados).
+     * @throws IOException Exceção gerada durante a leitura da entrada.
+     */
+    public static void main(String[] args) throws IOException {
+        BufferedReader leitor = new BufferedReader(new InputStreamReader(System.in));
+        String linha;
+        int instancia = 0;
+
+        // Processa cada instância até encontrar "m = 0", indicando o fim da entrada
+        while ((linha = leitor.readLine()) != null) {
+            int numeroDeCidades = Integer.parseInt(linha.trim());
+            if (numeroDeCidades == 0) break;  // Se número de cidades for 0, encerra a leitura de entradas
+            instancia++;
+
+            // Inicializa estruturas de dados para cada instância
+            indiceDasCidades = new HashMap<>();
+            grafo = new ArrayList<>();
+            int contadorDeCidades = 0;
+
+            // Lista dinâmica para contar passageiros por cidade
+            List<Integer> passageiros = new ArrayList<>();
+
+            // Processa as cidades e os respectivos números de passageiros
+            for (int i = 0; i < numeroDeCidades; i++) {
+                String[] partes = leitor.readLine().trim().split("\\s+");
+                if (partes.length < 2) continue; // Ignora linhas mal formatadas
+                String cidade = partes[0];
+                int quantidade = Integer.parseInt(partes[1]);
+
+                // Mapeia as cidades para índices numéricos
+                indiceDasCidades.putIfAbsent(cidade, contadorDeCidades++);
+                int idCidade = indiceDasCidades.get(cidade);
+
+                // Expande a lista de passageiros, se necessário, e armazena o número de passageiros
+                while (passageiros.size() <= idCidade) {
+                    passageiros.add(0);
+                }
+                passageiros.set(idCidade, quantidade);
+            }
+
+            // Lê cidade de destino e o número de voos
+            String[] eventoPartes = leitor.readLine().trim().split("\\s+");
+            if (eventoPartes.length < 2) continue;
+            int numeroDeVoos = Integer.parseInt(eventoPartes[0]);
+            String cidadeDestino = eventoPartes[1];
+
+            indiceDasCidades.putIfAbsent(cidadeDestino, contadorDeCidades++);
+            destino = indiceDasCidades.get(cidadeDestino);
+
+            // Expande a lista de passageiros para o destino, se necessário
+            while (passageiros.size() <= destino) {
+                passageiros.add(0);
+            }
+
+            // Lê e adiciona os voos ao grafo
+            for (int i = 0; i < numeroDeVoos; i++) {
+                String[] vooPartes = leitor.readLine().trim().split("\\s+");
+                if (vooPartes.length < 3) continue; // Ignora linhas mal formatadas
+                String origemCidade = vooPartes[0];
+                String destinoCidade = vooPartes[1];
+                int capacidade = Integer.parseInt(vooPartes[2]);
+
+                indiceDasCidades.putIfAbsent(origemCidade, contadorDeCidades++);
+                indiceDasCidades.putIfAbsent(destinoCidade, contadorDeCidades++);
+
+                int idOrigem = indiceDasCidades.get(origemCidade);
+                int idDestino = indiceDasCidades.get(destinoCidade);
+
+                // Adiciona as arestas representando os voos
+                adicionarAresta(idOrigem, idDestino, capacidade);
+            }
+
+            // A origem é a última cidade adicionada (extra) para os passageiros
+            origem = contadorDeCidades;
+
+            // Garante que o grafo tenha capacidade suficiente para a origem
+            while (grafo.size() <= origem) {
+                grafo.add(new ArrayList<>());
+            }
+
+            // Adiciona arestas da origem para as cidades com passageiros
+            for (Map.Entry<String, Integer> entrada : indiceDasCidades.entrySet()) {
+                int idCidade = entrada.getValue();
+                if (idCidade < passageiros.size() && passageiros.get(idCidade) > 0) {
+                    adicionarAresta(origem, idCidade, passageiros.get(idCidade));
+                }
+            }
+
+            // Calcula o fluxo máximo
+            int fluxoMaximo = fluxoMaximo();
+            int totalDePassageiros = passageiros.stream().mapToInt(Integer::intValue).sum();
+
+            // Imprime o resultado para a instância
+            System.out.println("Instancia " + instancia);
+            System.out.println(fluxoMaximo >= totalDePassageiros ? "viavel" : "inviavel");
+            System.out.println();
+        }
+    }
+
+    /**
+     * Adiciona uma aresta entre dois nós no grafo, representando um voo com capacidade
+     * especificada. Também adiciona uma aresta residual de capacidade 0, que permite
+     * ajustar o fluxo de passageiros de volta, caso necessário.
+     *
+     * @param origem     Índice do nó de origem.
+     * @param destino    Índice do nó de destino.
+     * @param capacidade Capacidade do voo (aresta).
+     */
+    static void adicionarAresta(int origem, int destino, int capacidade) {
+        while (grafo.size() <= Math.max(origem, destino)) {
+            grafo.add(new ArrayList<>());
+        }
+        // Cria aresta direta e residual
+        Aresta arestaDireta = new Aresta(destino, capacidade);
+        Aresta arestaResidual = new Aresta(origem, 0);
+        arestaDireta.residual = arestaResidual;
+        arestaResidual.residual = arestaDireta;
+        grafo.get(origem).add(arestaDireta);
+        grafo.get(destino).add(arestaResidual);
+    }
+
+    /**
+     * Calcula o fluxo máximo usando o algoritmo de Edmonds-Karp.
+     * O algoritmo realiza múltiplas buscas em largura (BFS) até não encontrar mais
+     * caminhos de aumento.
+     *
+     * @return O fluxo máximo encontrado.
+     */
+    static int fluxoMaximo() {
+        int fluxo = 0;
+        while (true) {
+            // Chama o método bfs para encontrar o próximo caminho de aumento
+            int fluxoDeAumento = bfs();
+            if (fluxoDeAumento == 0) break; // Se não houver mais caminho de aumento, termina
+            fluxo += fluxoDeAumento; // Acumula o fluxo total
+        }
+        return fluxo; // Retorna o fluxo máximo encontrado
+    }
+
+    /**
+     * Realiza uma busca em largura (BFS - Breadth-First Search) para encontrar o caminho de aumento
+     * no grafo. Durante a busca, as variáveis 'pais' e 'arestaPai' são atualizadas para reconstruir
+     * o caminho de aumento. O fluxo máximo é determinado pela capacidade mínima no caminho encontrado.
+     * <p>
+     * As arestas residuais são atualizadas para refletir a mudança no fluxo.
+     *
+     * @return O fluxo que pode ser aumentado no caminho encontrado, ou 0 se não houver mais
+     * caminhos de aumento.
+     */
+    static int bfs() {
+        Queue<Integer> fila = new LinkedList<>();
+        pais = new int[grafo.size()];  // Array que mantém o caminho dos nós
+        arestaPai = new Aresta[grafo.size()];  // Array que mantém a aresta de cada nó no caminho
+        Arrays.fill(pais, -1);  // Inicializa todos os nós como não visitados
+        fila.add(origem);  // Começa a busca pela origem
+        pais[origem] = origem;  // Marca a origem como visitada
+
+        while (!fila.isEmpty()) {
+            int atual = fila.poll();  // Pega o próximo nó na fila
+            if (atual >= grafo.size()) continue;  // Ignora nós fora do grafo
+            for (Aresta aresta : grafo.get(atual)) {  // Percorre todas as arestas do nó atual
+                // Se a aresta tem capacidade residual (não saturada) e o destino não foi visitado
+                if (pais[aresta.destino] == -1 && aresta.capacidade > aresta.fluxo) {
+                    pais[aresta.destino] = atual;  // Marca o nó de origem do caminho
+                    arestaPai[aresta.destino] = aresta;  // Guarda a aresta usada
+                    if (aresta.destino == destino) {  // Se chegou ao destino, encontrou um caminho de aumento
+                        int fluxo = Integer.MAX_VALUE;
+                        // Determina o fluxo mínimo (bottleneck) no caminho
+                        for (int v = destino; v != origem; v = pais[v]) {
+                            fluxo = Math.min(fluxo, arestaPai[v].capacidade - arestaPai[v].fluxo);
+                        }
+                        // Atualiza o fluxo das arestas no caminho de aumento
+                        for (int v = destino; v != origem; v = pais[v]) {
+                            arestaPai[v].fluxo += fluxo;  // Aumenta o fluxo na aresta
+                            arestaPai[v].residual.fluxo -= fluxo;  // Diminui o fluxo na aresta residual
+                        }
+                        return fluxo;  // Retorna o fluxo do caminho encontrado
+                    }
+                    fila.add(aresta.destino);  // Adiciona o nó destino à fila para explorar
+                }
+            }
+        }
+        return 0;  // Retorna 0 se não encontrar mais caminho de aumento
+    }
+}
