@@ -1,0 +1,60 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+
+/*
+ * O código lê uma sequência de linhas de entrada, onde cada linha contém um texto com os caracteres '['
+ * e ']', que indicam a posição de inserção no início ou no final de um texto acumulado. O código usa um
+ * LinkedList para manipular a sequência de caracteres de maneira eficiente em termos de inserção, e no final,
+ * ele imprime o texto resultante para cada linha de entrada.
+ *
+ * Exemplo de Entrada:
+ * This_is_a_[Beiju]_text
+ * [[]][]Happy_Birthday_Tsinghua_University
+ *
+ * Exemplo de Saida:
+ * BeijuThis_is_a__text
+ * Happy_Birthday_Tsinghua_University
+ */
+public class Main {
+    public static void main(String[] args) throws IOException {
+        // Cria um leitor para ler linhas da entrada padrão (teclado)
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String line;
+
+        // Loop para ler cada linha até o final da entrada
+        while ((line = reader.readLine()) != null) {
+            // LinkedList é usada para armazenar os caracteres do texto
+            LinkedList<Character> text = new LinkedList<>();
+            boolean atStart = false;
+
+            // Cria um iterador para manipular a posição de inserção na lista
+            var iterator = text.listIterator();
+
+            // Processa cada caractere na linha
+            for (char ch : line.toCharArray()) {
+                if (ch == '[') {
+                    // Se encontrar '[', move o iterador para o início da lista
+                    atStart = true;
+                    iterator = text.listIterator(); // Move para o início
+                } else if (ch == ']') {
+                    // Se encontrar ']', move o iterador para o final da lista
+                    atStart = false;
+                    iterator = text.listIterator(text.size()); // Move para o fim
+                } else {
+                    // Caso contrário, insere o caractere na posição do iterador
+                    iterator.add(ch);
+                }
+            }
+
+            // Constrói a string final a partir dos caracteres armazenados na lista
+            StringBuilder result = new StringBuilder();
+            for (char ch : text) {
+                result.append(ch);
+            }
+
+            System.out.println(result.toString()); // Garante a quebra de linha correta
+        }
+    }
+}
