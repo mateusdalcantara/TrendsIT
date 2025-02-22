@@ -1,0 +1,63 @@
+import java.util.Scanner;
+
+public class Main {
+
+    static long count = 0;
+    static String resultado = "-1";
+
+    // Função para verificar se uma sequência é mal formada
+    public static boolean ehMalFormada(String seq) {
+        int saldo = 0;
+        for (char c : seq.toCharArray()) {
+            if (c == '(') saldo++;
+            else saldo--;
+            if (saldo < 0) return true;  // Se o saldo ficar negativo, já sabemos que é mal formada
+        }
+        return saldo != 0;  // Se não fechar corretamente, também é mal formada
+    }
+
+    // Função para gerar apenas as sequências mal formadas até encontrar a K-ésima
+    public static void gerarMalFormadas(StringBuilder atual, int abertos, int fechados, int N, long K) {
+        if (atual.length() == N) {
+            if (ehMalFormada(atual.toString())) {
+                count++;
+                if (count - 1 == K) {  // Encontramos a K-ésima sequência
+                    resultado = atual.toString();
+                }
+            }
+            return;
+        }
+
+        // Se já encontramos a resposta, não continuar a busca
+        if (!resultado.equals("-1")) return;
+
+        // Adicionar '('
+        atual.append('(');
+        gerarMalFormadas(atual, abertos + 1, fechados, N, K);
+        atual.deleteCharAt(atual.length() - 1);
+
+        // Adicionar ')'
+        atual.append(')');
+        gerarMalFormadas(atual, abertos, fechados + 1, N, K);
+        atual.deleteCharAt(atual.length() - 1);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int T = sc.nextInt();
+        while (T-- > 0) {
+            int N = sc.nextInt();
+            long K = sc.nextLong();
+
+            count = 0;
+            resultado = "-1";  // Resetar o resultado
+
+            // Gerar apenas as mal formadas até encontrar a K-ésima
+            gerarMalFormadas(new StringBuilder(), 0, 0, N, K);
+
+            System.out.println(resultado);
+        }
+        sc.close();
+    }
+}
